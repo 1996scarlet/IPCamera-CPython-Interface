@@ -17,30 +17,30 @@ This is the [download page](http://www.hikvision.com/cn/download_more_403.html "
 ## 内存管道用法（python + ffmpeg -> rtmp）
 > 0.   首先配置命令如下
 
-`command = ['ffmpeg',
-    '-y',
-    '-f', 'rawvideo',
-    '-vcodec','rawvideo',
-    '-pix_fmt', 'bgr24',
-    '-s', '1920x1080',
-    '-i', '-',
-    '-c:v', 'libx264',
-    '-pix_fmt', 'yuv420p',
-    '-preset', 'ultrafast',
-    '-f', 'flv',
-    'rtmp://10.41.0.147:1935/hls/livestream']`
+    command = ['ffmpeg',
+        '-y',
+        '-f', 'rawvideo',
+        '-vcodec','rawvideo',
+        '-pix_fmt', 'bgr24',
+        '-s', '1920x1080',
+        '-i', '-',
+        '-c:v', 'libx264',
+        '-pix_fmt', 'yuv420p',
+        '-preset', 'ultrafast',
+        '-f', 'flv',
+        'rtmp://10.41.0.147:1935/hls/livestream']
     
 > 1.   初始化子进程
 
-`import subprocess as sp
-proc = sp.Popen(command, stdin=sp.PIPE,shell=False)`
+    import subprocess as sp
+    proc = sp.Popen(command, stdin=sp.PIPE,shell=False)
 
 > 2.   帧数据写入内存管道
 
-`while True:
-    frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
-    #cv2.imshow("OKOK", frame)
-    #cv2.waitKey(1)
-    proc.stdin.write(frame.tostring())`
+    while True:
+        frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
+        #cv2.imshow("OKOK", frame)
+        #cv2.waitKey(1)
+        proc.stdin.write(frame.tostring())
 
 ## 注意事项 （Cautious）
