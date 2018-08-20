@@ -49,11 +49,11 @@
 
 
 # FAQ
-Q:使用是报错“ImportError: dynamic module does not define init function (initpycext)”
-A:使用的Python的版本与编译的Python的版本不一致。如编译的为Python 3,使用Python 2调用会报如上错误。
+* Q:使用是报错“ImportError: dynamic module does not define init function (initpycext)”
+* A:使用的Python的版本与编译的Python的版本不一致。如编译的为Python 3,使用Python 2调用会报如上错误。
 
-Q:运行时提示107错误？
-A:需要将pycext.so文件和海康sdk文件放在同一目录下。
+* Q:运行时提示107错误？
+* A:需要将pycext.so文件和海康sdk文件放在同一目录下。
 
         .
         ├── demo_v1.py
