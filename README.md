@@ -1,4 +1,9 @@
 # ICT-HCNet-hkcamera
+## 这是什么东西（What is this）
+* 兼容主流海康网络摄像机（小型机、球机、追踪相机）的python接口
+* 通过python进行海康相机连接、登录、取流、解码（FFMPEG）、取帧
+* 支持python2和python3（编译时修改CMAKE即可）
+
 ## 海康SDK下载地址（HK-SDK Download Url）
 This is the [download page](http://www.hikvision.com/cn/download_more_403.html "Title") .
 版本号: V5.3.5.2 build20171124。将海康的SDK解压到/sdk文件夹下。
