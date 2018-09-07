@@ -73,9 +73,9 @@ static PyMemberDef CIPCamera_DataMembers[] =
 
 // constructor
 #if PY_MAJOR_VERSION >= 3
-    static int CIPCamera_init(CIPCamera *Self, PyObject *pArgs)
+static int CIPCamera_init(CIPCamera *Self, PyObject *pArgs)
 #else
-    static void CIPCamera_init(CIPCamera *Self, PyObject *pArgs)
+static void CIPCamera_init(CIPCamera *Self, PyObject *pArgs)
 #endif
 {
 	//* IMPORTANT: this must be called for numpy (avoid exception:Segment Fault)
@@ -98,11 +98,10 @@ static PyMemberDef CIPCamera_DataMembers[] =
 		// raise exceiont....
 		printf("Parse the argument FAILED! You should pass correct values!\r\n");
 #if PY_MAJOR_VERSION >= 3
-    return -1;
+		return -1;
 #else
-    return;
+		return;
 #endif
-		
 	}
 
 	Self->m_szIP = new char[strlen(szIP) + 1];
@@ -115,11 +114,11 @@ static PyMemberDef CIPCamera_DataMembers[] =
 	strcpy(Self->m_szPWD, szPWD);
 	strcpy(Self->m_absPath, absPath);
 
-	system("mkdir Temp");
-	#if PY_MAJOR_VERSION >= 3
-    return 0;
+	// system("mkdir Temp");
+#if PY_MAJOR_VERSION >= 3
+	return 0;
 #else
-    return;
+	return;
 #endif
 }
 
@@ -236,11 +235,17 @@ static PyObject *CIPCamera_PrintInfo(CIPCamera *Self)
 uint8_t *current_data_point;
 AVFrame *pYUVFrame = av_frame_alloc();
 AVFrame *pRGBFrame = av_frame_alloc();
+
+auto iFlag = false;
 // Mat current_image;
 // HK-SDK start ================== strat
 // 原始H264码流（裸码流）回调 暂时无用
 void CALLBACK g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pstruPackInfo, void *pUser)
 {
+	// cout << pstruPackInfo->dwPacketType << endl;
+
+	if (pstruPackInfo->dwPacketType == 11) return;
+
 	AVPacket *avpacket = av_packet_alloc();
 
 	avpacket->size = pstruPackInfo->dwPacketSize;
@@ -251,18 +256,19 @@ void CALLBACK g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pst
 	avpicture_fill((AVPicture *)pRGBFrame, buffer, AV_PIX_FMT_BGR24, dCodecCtx->width, dCodecCtx->height);
 	int frameFinished;
 
+		// dCodecCtx->pix_fmt = AV_PIX_FMT_YUV420P;
+
+
 	avcodec_decode_video2(dCodecCtx, pYUVFrame, &frameFinished, avpacket);
 
 	if (frameFinished)
 	{
-		struct SwsContext *img_convert_ctx = sws_getCachedContext(NULL, dCodecCtx->width, dCodecCtx->height, dCodecCtx->pix_fmt, dCodecCtx->width, dCodecCtx->height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
+		struct SwsContext *img_convert_ctx = sws_getCachedContext(NULL, dCodecCtx->width, dCodecCtx->height, AV_PIX_FMT_YUV420P, dCodecCtx->width, dCodecCtx->height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
 		sws_scale(img_convert_ctx, (uint8_t const *const *)pYUVFrame->data,
 				  pYUVFrame->linesize, 0, dCodecCtx->height,
 				  pRGBFrame->data, pRGBFrame->linesize);
 
 		current_data_point = pRGBFrame->data[0];
-
-		Mat img(pYUVFrame->height, pYUVFrame->width, CV_8UC3, *(pRGBFrame->data)); //dst->data[0]);
 
 		// ostringstream oss;
 		// oss << format(img, 3);
@@ -271,6 +277,7 @@ void CALLBACK g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pst
 
 		if (flag)
 		{
+			Mat img(pYUVFrame->height, pYUVFrame->width, CV_8UC3, *(pRGBFrame->data)); //dst->data[0]);
 			cv::imshow("display", img);
 			cvWaitKey(2);
 		}
@@ -342,7 +349,7 @@ static PyObject *CIPCamera_Open(CIPCamera *Self)
 	struPlayInfo.dwStreamType = 0;
 	//0-主码流,1-子码流,2-码流 3,3-码流 4,以此类推
 	struPlayInfo.dwLinkMode = 0; //0- TCP 方式,1- UDP 方式,2- 多播方式,3- RTP 方式,4-RTP/RTSP,5-RSTP/HTTP
-	struPlayInfo.bBlocked = 1;   //0- 非阻塞取流,1- 阻塞取流
+	struPlayInfo.bBlocked = 0;   //0- 非阻塞取流,1- 阻塞取流
 	Self->m_lRealPlayHandle = NET_DVR_RealPlay_V40(Self->m_lUserID, &struPlayInfo, NULL, NULL);
 
 	if (Self->m_lRealPlayHandle < 0)
