@@ -30,18 +30,24 @@
         └── Temp
 
 # 简单使用
-        python3
-        from pycext import IPCamera
-        cp = IPCamera("IP",PORT,"USERNAME","PWD","DIR")
-        cp.PrintInfo()
+
+```python
+from pycext import IPCamera
+cp = IPCamera("IP",PORT,"USERNAME","PWD","DIR")
+cp.PrintInfo()
+```
 
 # 直接从内存读取帧画面并通过cv2连续显示
-        while True:
-        cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
-        cv2.waitKey(1)
+
+```python
+while True:
+    cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
+    cv2.waitKey(1)
+```
 
 # 通过cv2连续显示H264-stream中图像
 
+```python
         import os, time
         image_dir = os.path.dirname(os.path.realpath(__file__))+ "/Temp"
 
@@ -66,3 +72,4 @@
         cp.StopParsingStream()
         print("Stoping Parsing Stream...")
         cp.close()
+ ```
