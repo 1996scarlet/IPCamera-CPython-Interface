@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project(pycext)
 
-SET(TARGET_PYTHON_VERSION 2)
+SET(TARGET_PYTHON_VERSION 3)
 
-#find_package(NumPy REQUIRED)
+#find_package(FFmpeg REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(PythonLibs ${TARGET_PYTHON_VERSION} REQUIRED)
 find_package(PythonInterp)
@@ -14,7 +14,6 @@ message(${PYTHON_INCLUDE_DIR})
 # include_directories("/usr/include/python3.6")
 # include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(SYSTEM ${PYTHON_INCLUDE_DIR})
-
 # include Hikvision SDK
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/incCn)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/lib)

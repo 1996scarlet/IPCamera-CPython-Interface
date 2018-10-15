@@ -3,7 +3,7 @@
 using namespace std;
 int main()
 {
-    HKIPCamera hkpc("10.41.0.98", 8000, "admin", "humanmotion01");
+    HKIPCamera hkpc("10.41.0.236", 8000, "admin", "humanmotion01");
     hkpc.login();
     hkpc.open();
     sleep(1);

@@ -1,0 +1,3 @@
+/home/humanmotion/Desktop/workspace/hkcamera/PyCExt/build/CMakeFiles/rebuild_cache.dir
+/home/humanmotion/Desktop/workspace/hkcamera/PyCExt/build/CMakeFiles/pycext.dir
+/home/humanmotion/Desktop/workspace/hkcamera/PyCExt/build/CMakeFiles/edit_cache.dir

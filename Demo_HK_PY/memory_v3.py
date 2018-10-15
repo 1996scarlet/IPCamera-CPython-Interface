@@ -6,7 +6,7 @@ import numpy as np
 
 image_dir = os.path.dirname(os.path.realpath(__file__)) + "/Temp"  # 路径不要修改
 from pycext import IPCamera
-cp = IPCamera("10.41.0.51", 8000, "admin", "humanmotion01", image_dir)
+cp = IPCamera("10.41.0.236", 8000, "admin", "humanmotion01", image_dir)
 cp.PrintInfo()  # 打印信息
 
 cp.login()
@@ -20,7 +20,9 @@ time.sleep(2)
 
 while True:
     cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
-    cv2.waitKey(1)
+    k = cv2.waitKey(1) & 0xff
+    if k == ord('q') or k == 27:
+        break
 # print (img)
 # print(cp.GetCurrentionFrame())
 # cp.GetCurrentionFrame()

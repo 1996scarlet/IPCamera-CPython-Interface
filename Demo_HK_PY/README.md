@@ -7,7 +7,6 @@
 # 部署方式
 
 文件结构如下所示 如果缺少so文件可能会发生107错误
-
         .
         ├── demo_v1.py
         ├── HCNetSDKCom
@@ -30,24 +29,18 @@
         └── Temp
 
 # 简单使用
-
-```python
-from pycext import IPCamera
-cp = IPCamera("IP",PORT,"USERNAME","PWD","DIR")
-cp.PrintInfo()
-```
+        python3
+        from pycext import IPCamera
+        cp = IPCamera("IP",PORT,"USERNAME","PWD","DIR")
+        cp.PrintInfo()
 
 # 直接从内存读取帧画面并通过cv2连续显示
-
-```python
-while True:
-    cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
-    cv2.waitKey(1)
-```
+        while True:
+        cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
+        cv2.waitKey(1)
 
 # 通过cv2连续显示H264-stream中图像
 
-```python
         import os, time
         image_dir = os.path.dirname(os.path.realpath(__file__))+ "/Temp"
 
@@ -72,4 +65,3 @@ while True:
         cp.StopParsingStream()
         print("Stoping Parsing Stream...")
         cp.close()
- ```
