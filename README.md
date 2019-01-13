@@ -53,3 +53,5 @@ while True:
 ```
 
 ## 注意事项 （Cautious）
+[Install openCV 4.0.0 in Ubuntu 18.04](https://www.pyimagesearch.com/2018/08/15/how-to-install-opencv-4-on-ubuntu/)
+ffmpeg 4.1 -> ./configure --enbale-shared
