@@ -53,5 +53,16 @@ while True:
 ```
 
 ## 注意事项 （Cautious）
+Solve this problem with flag --with-darwinssl
+
+Go to folder with curl source code
+
+Download it here https://curl.haxx.se/download.html
+
+cd /root/Downloads/curl # step-1
+./configure --with-ssl # step-2
+make # step-3
+make install # step-4 (if not root, use sudo before command)
+
 [Install openCV 4.0.0 in Ubuntu 18.04](https://www.pyimagesearch.com/2018/08/15/how-to-install-opencv-4-on-ubuntu/)
 ffmpeg 4.1 -> ./configure --enbale-shared
