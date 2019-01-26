@@ -3,7 +3,7 @@
 
 ## 这是什么东西（What is this）
 
-> * 兼容主流海康和雄迈网络摄像机（小型机、球机、追踪相机）的python接口
+> * 兼容主流海康和雄迈IPC的适用于C++和python的帧数据获取接口
 > * 通过python进行海康（雄迈）IP相机连接、登录、注册回调、解码（FFMPEG）、取帧
 > * 支持python2和python3（编译时修改CMAKE的`TARGET_PYTHON_VERSION`）
 
