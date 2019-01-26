@@ -74,22 +74,20 @@
 * [海康SDK-版本号: V5.3.5.2 build20171124](http://www.hikvision.com/cn/download_more_403.html "Title")
 * [雄迈SDK-更新日期: 2018-06-26](https://download.xm030.cn/d/MDAwMDA3MzM "Title")
 
-## 目录结构（Files-Tree）
+## 目录结构说明（Files-Tree）
 
-> 1. Demo_HK_PY - 封装后的python调用demo 通过CV2对解析后的H264图像序列进行显示
-> 2. PyCExt - 接口封装源文件
-> 3. 目录下其他文件 - 用于测试SDK
+* hk_interface - 存放海康接口源码、测试demo、SDK
+* xm_interface - 存放雄迈接口源码、测试demo、SDK
+* 关键目录下都附带README文件
 
 ## 注意事项（Cautious）
 
 * 使用内存管道方法配合`nginx_rtmp_module`推流延迟较高，如果需要低延迟推流可以考虑使用[基于类MJPEG协议的推流框架](...)
-* v3版本是针对`ffmpeg 3.X`和`opencv 3.X`设计的封装方案，且c++和python封装为两个独立的工程，二者API实现方式存在细微差别，现已不再维护，推荐使用[主分支上的新版本](...)
-
-* Solve this problem with flag --with-darwinssl
-* Go to folder with [curl source code](https://curl.haxx.se/download.html)
+* v3版本是针对`ffmpeg 3.X`和`opencv 3.X`设计的封装方案，且c++和python封装为两个独立的工程，二者API实现方式存在细微差别，现已不再维护，推荐使用[主分支上的新版本](https://github.com/1996scarlet/IPCamera-CPython-Interface)
+* 编译安装`ffmpeg`前需要设置`./configure --enbale-shared`来防止`opencv`编译过程无法引用动态库导致的`video.so`相关错误
+* 编译安装`opencv`时若出现`xfeatures2d`相关错误，需要[重新下载`curl`](https://curl.haxx.se/download.html)并按照如下步骤编译安装
     1. cd /root/Downloads/curl
     2. ./configure --with-ssl
     3. make
     4. sudo make install
-* [Install openCV 4.0.0 in Ubuntu 18.04](https://www.pyimagesearch.com/2018/08/15/how-to-install-opencv-4-on-ubuntu/)
-* ffmpeg 4.1 -> ./configure --enbale-shared
+* 在Ubuntu 18.04上安装openCV可以参考[这个链接](https://www.pyimagesearch.com/2018/08/15/how-to-install-opencv-4-on-ubuntu/)
