@@ -7,6 +7,11 @@
 > * 通过python进行海康（雄迈）IP相机连接、登录、注册回调、解码（FFMPEG）、取帧
 > * 支持python2和python3（编译时修改CMAKE的`TARGET_PYTHON_VERSION`）
 
+## 原理简要说明（Brief description of the principle）
+
+流程图 架构图
+文字说明
+
 ## 取帧方法（The way to get frame）
 
 ```python
@@ -67,14 +72,7 @@
 * `gcc/g++`
 * `libx264-dev`
 * [海康SDK-版本号: V5.3.5.2 build20171124](http://www.hikvision.com/cn/download_more_403.html "Title")
-* [雄迈SDK-版本号: V5.3.5.2 build20171124](http://www.hikvision.com/cn/download_more_403.html "Title")
-
-## SDK文件夹使用方法 （How to use the SDK）
-
-> 1. 定义`video.cpp`文件所在的文件夹为根目录。
-> 2. 将SDK压缩包中的lib文件夹下的所有内容拷贝到根目录中。
-> 3. 将SDK压缩包中的incCn文件夹下的`HCNetSDK.h`头文件拷贝到根目录中。
-> 4. (可选)将`LinuxPlayM4.h`和`PlayM4.h`拷贝到根目录中。解压到对应目录的sdk文件夹下
+* [雄迈SDK-更新日期: 2018-06-26](https://download.xm030.cn/d/MDAwMDA3MzM "Title")
 
 ## 目录结构（Files-Tree）
 
@@ -82,9 +80,10 @@
 > 2. PyCExt - 接口封装源文件
 > 3. 目录下其他文件 - 用于测试SDK
 
-## 注意事项 （Cautious）
+## 注意事项（Cautious）
 
 * 使用内存管道方法配合`nginx_rtmp_module`推流延迟较高，如果需要低延迟推流可以考虑使用[基于类MJPEG协议的推流框架](...)
+* v3版本是针对`ffmpeg 3.X`和`opencv 3.X`设计的封装方案，且c++和python封装为两个独立的工程，二者API实现方式存在细微差别，现已不再维护，推荐使用[主分支上的新版本](...)
 
 * Solve this problem with flag --with-darwinssl
 * Go to folder with [curl source code](https://curl.haxx.se/download.html)
