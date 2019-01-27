@@ -1,67 +1,93 @@
 # How to Use HKCamera with Python
 
-# 编译生成pycext.so
-具体方法请见Pycext文件夹
-也可以使用本目录下的pycext.so文件（python3 编译）
+## 简单使用(easy_start.py)
 
-# 部署方式
+```python
+from pycext import IPCamera
+cp = IPCamera("10.41.0.99", 8000, "admin", "humanmotion01", image_dir)
+cp.PrintInfo()  # 打印信息
+cp.login()
+cp.open()
+cp.close()
+```
 
-文件结构如下所示 如果缺少so文件可能会发生107错误
-        .
-        ├── demo_v1.py
-        ├── HCNetSDKCom
-        │   ├── libanalyzedata.so
-        │   ├── libHCAlarm.so
-        │   ├── libHCCoreDevCfg.so
-        │   ├── libHCDisplay.so
-        │   ├── libHCGeneralCfgMgr.so
-        │   ├── libHCIndustry.so
-        │   ├── libHCPlayBack.so
-        │   ├── libHCPreview.so
-        │   ├── libiconv2.so
-        │   ├── libStreamTransClient.so
-        │   └── libSystemTransform.so
-        ├── libHCCore.so
-        ├── libhcnetsdk.so
-        ├── libhpr.so
-        ├── pycext.so
-        ├── readme.md
-        └── Temp
+## 通过硬盘作为中间载体(disk_frame.py)
 
-# 简单使用
-        python3
-        from pycext import IPCamera
-        cp = IPCamera("IP",PORT,"USERNAME","PWD","DIR")
-        cp.PrintInfo()
+```python
+cp.StratParsingStream() # 先用ffmpeg替代
 
-# 直接从内存读取帧画面并通过cv2连续显示
-        while True:
-        cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
-        cv2.waitKey(1)
+time.sleep(2) # 最好暂停一段时间让ffmpeg启动 否则会导致cv图像显示失败
+for _ in range(1000):
+    cv2.imshow('stream',cv2.imread(cp.GetDetentionFrame()))
+    cv2.waitKey(1)
 
-# 通过cv2连续显示H264-stream中图像
+cv2.destroyAllWindows()
+cp.StopParsingStream() # 通过kill加pidof销毁进程
+```
 
-        import os, time
-        image_dir = os.path.dirname(os.path.realpath(__file__))+ "/Temp"
+## 通过内存缓冲区作为中间载体(memory.py)
 
-        from pycext import IPCamera
-        cp = IPCamera("10.41.0.99",8000,"admin","humanmotion01",image_dir)
-        cp.PrintInfo()
-        cp.StratParsingStream()
+```python
+while True:
+    cv2.imshow("OKOK", np.asarray(cp.queryframe('array')).reshape(1080,1920,3))
+    k = cv2.waitKey(1) & 0xff
+    if k == ord('q') or k == 27:
+        break
+```
 
-        print("Starting Parsing Stream...")
+## 配合内存管道推流(ffmpeg_pipe.py)
 
-        time.sleep(2)
+```python
+# 首先配置命令如下
+command = ['ffmpeg',
+    '-y',
+    '-f', 'rawvideo',
+    '-vcodec','rawvideo',
+    '-pix_fmt', 'bgr24',
+    '-s', '1920x1080',
+    '-i', '-',
+    '-c:v', 'libx264',
+    '-pix_fmt', 'yuv420p',
+    '-preset', 'ultrafast',
+    '-f', 'flv',
+    'rtmp://10.41.0.147:1935/hls/livestream']
 
-        import cv2
+# 初始化子进程
+import subprocess as sp
+proc = sp.Popen(command, stdin=sp.PIPE,shell=False)
 
-        i = 0
-        while i<2000:
-        cv2.imshow('stream',cv2.imread(cp.GetDetentionFrame()))
-        cv2.waitKey(1)
-        i = i + 1
+# 帧数据写入内存管道
+while True:
+    frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
+    proc.stdin.write(frame.tostring())
+```
 
-        cv2.destroyAllWindows()
-        cp.StopParsingStream()
-        print("Stoping Parsing Stream...")
-        cp.close()
+## FAQ
+
+Q:运行时报错“ImportError: dynamic module does not define init function (initpycext)”
+A:使用的Python的版本与编译的Python的版本不一致。如编译的为Python 3,使用Python 2调用会报如上错误。
+
+Q:运行时提示107错误？
+A:需要将pycext.so文件和海康sdk文件放在同一目录下。
+
+```bash
+.
+├── HCNetSDKCom
+│   ├── libanalyzedata.so
+│   ├── libHCAlarm.so
+│   ├── libHCCoreDevCfg.so
+│   ├── libHCDisplay.so
+│   ├── libHCGeneralCfgMgr.so
+│   ├── libHCIndustry.so
+│   ├── libHCPlayBack.so
+│   ├── libHCPreview.so
+│   ├── libiconv2.so
+│   ├── libStreamTransClient.so
+│   └── libSystemTransform.so
+├── 要执行的PY文件
+├── HCNetSDK.h
+├── libHCCore.so
+├── libhcnetsdk.so
+├── libhpr.so
+├── pycext.so
+```
