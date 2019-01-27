@@ -15,46 +15,46 @@
 ## 取帧方法（The way to get frame）
 
 ```python
-    from pycext import IPCamera # 引用`pycext.so`
-    cp = IPCamera("ip", port, "username", "password", "") # port为整型数
-    cp.PrintInfo() # 可选：打印信息
-    cp.login() # 登录
-    cp.open() # 注册回调
+from pycext import IPCamera # 引用`pycext.so`
+cp = IPCamera("ip", port, "username", "password", "") # port为整型数
+cp.PrintInfo() # 可选：打印信息
+cp.login() # 登录
+cp.open() # 注册回调
 
-    time.sleep(2) # 等待第一个I帧处理完毕 推荐等待不小于1秒
+time.sleep(2) # 等待第一个I帧处理完毕 推荐等待不小于1秒
 
-    while True: # 如果CPU处理能力很强 建议设置循环等待间隔
-        frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
-        # 可选择安装：`opencv-python` 和 `opencv-contrib-python`
-        cv2.imshow("OKOK", frame)
-        cv2.waitKey(1)
+while True: # 如果CPU处理能力很强 建议设置循环等待间隔
+    frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
+    # 可选择安装：`opencv-python` 和 `opencv-contrib-python`
+    cv2.imshow("OKOK", frame)
+    cv2.waitKey(1)
 ```
 
 ## 配合内存管道推流（python + ffmpeg -> rtmp）
 
 ```python
-    # 首先配置命令如下
-    command = ['ffmpeg',
-        '-y',
-        '-f', 'rawvideo',
-        '-vcodec','rawvideo',
-        '-pix_fmt', 'bgr24',
-        '-s', '1920x1080',
-        '-i', '-',
-        '-c:v', 'libx264',
-        '-pix_fmt', 'yuv420p',
-        '-preset', 'ultrafast',
-        '-f', 'flv',
-        'rtmp://10.41.0.147:1935/hls/livestream']
+# 首先配置命令如下
+command = ['ffmpeg',
+    '-y',
+    '-f', 'rawvideo',
+    '-vcodec','rawvideo',
+    '-pix_fmt', 'bgr24',
+    '-s', '1920x1080',
+    '-i', '-',
+    '-c:v', 'libx264',
+    '-pix_fmt', 'yuv420p',
+    '-preset', 'ultrafast',
+    '-f', 'flv',
+    'rtmp://10.41.0.147:1935/hls/livestream']
 
-    # 初始化子进程
-    import subprocess as sp
-    proc = sp.Popen(command, stdin=sp.PIPE,shell=False)
+# 初始化子进程
+import subprocess as sp
+proc = sp.Popen(command, stdin=sp.PIPE,shell=False)
 
-    # 帧数据写入内存管道
-    while True:
-        frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
-        proc.stdin.write(frame.tostring())
+# 帧数据写入内存管道
+while True:
+    frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
+    proc.stdin.write(frame.tostring())
 ```
 
 ## 环境要求（the environment require）
@@ -78,7 +78,7 @@
 
 * hk_interface - 存放海康接口源码、测试demo、SDK
 * xm_interface - 存放雄迈接口源码、测试demo、SDK
-* 关键目录下都附带README文件
+* 每个关键子目录下都附带README文件
 
 ## 注意事项（Cautious）
 

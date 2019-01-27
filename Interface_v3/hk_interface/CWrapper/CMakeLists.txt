@@ -25,4 +25,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../sdk/lib)
 
 add_library(${PROJECT_NAME} SHARED CHKCamera.cpp)
 set_target_properties(libHKCamera PROPERTIES PREFIX "")
-target_link_libraries(${PROJECT_NAME} ${FFMPEG_LIBRARIES} ${OpenCV_LIBS} ${SWSCALE_LIBRARIES} libPlayCtrl.so libHCCore.so libAudioRender.so libSuperRender.so libhcnetsdk.so libhpr.so libanalyzedata.so libHCAlarm.so libHCCoreDevCfg.so libHCGeneralCfgMgr.so libHCDisplay.so libHCPlayBack.so libHCPreview.so libHCVoiceTalk.so libiconv2.so libSystemTransform.so libStreamTransClient.so libHCIndustry.so libpthread.so)
+target_link_libraries(${PROJECT_NAME} ${FFMPEG_LIBRARIES} ${OpenCV_LIBS} ${SWSCALE_LIBRARIES} libhcnetsdk.so libAudioRender.so libHCCore.so libhpr.so libPlayCtrl.so libSuperRender.so libanalyzedata.so libHCAlarm.so libHCCoreDevCfg.so libHCDisplay.so libHCGeneralCfgMgr.so libHCIndustry.so libHCPlayBack.so libHCPreview.so libHCVoiceTalk.so libiconv2.so libStreamTransClient.so libSystemTransform.so libpthread.so)

@@ -5,10 +5,10 @@ import cv2
 import numpy as np
 import sys
 
-sys.path.append("..")
+sys.path.append("../sdk/lib")
 image_dir = os.path.dirname(os.path.realpath(__file__)) + "/Temp"
 
-from sdk.interface.pycext import IPCamera
+from pycext import IPCamera
 cp = IPCamera("10.41.0.236", 8000, "admin", "humanmotion01", image_dir)
 cp.PrintInfo()  # 打印信息
 
