@@ -2,7 +2,7 @@
 
 ## 如何编译
 
-```shell
+```bash
 mkdir build
 cd build
 cmake .. # gen the makefile
@@ -13,15 +13,32 @@ make     # gen *.so
 
 ## API说明
 
-        HKIPCamera hkpc("10.41.0.99", 8000, "admin", "humanmotion01");
-        hkpc.login();
-        hkpc.open();
-        sleep(1);
-        imshow("OKK", hkpc.get_current_frame_mat());
-        cvWaitKey(0);
-        hkpc.close();
+> 构造函数
 
-## FAQ
+```C++
+HKIPCamera(char* IP, int Port, char* UserName, char* Password);
+```
 
-Q:运行时提示107错误？
-A:需要将libHKCamera.so文件、执行文件和海康sdk文件放在同一目录下。
+> 登录
+
+```C++
+int login(); //返回0代表成功 返回-1并打印错误代码则代表失败
+```
+
+> 注册回调并开始解码
+
+```C++
+int open(); //返回0代表成功 返回-1并打印错误代码则代表失败
+```
+
+> 取帧
+
+```C++
+cv::Mat get_current_frame_mat(); //返回最新的已经处理完毕的帧数据
+```
+
+> 注销回调、登出、销毁对象
+
+```C++
+int close(); //返回0代表成功 返回-1并打印错误代码则代表失败
+```
