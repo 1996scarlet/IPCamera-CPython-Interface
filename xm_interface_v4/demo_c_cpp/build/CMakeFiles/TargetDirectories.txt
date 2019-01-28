@@ -1,0 +1,3 @@
+/home/scarlet/streamVideo/code/sunxu/Interface_v4/xm_interface_v4/demo_c_cpp/build/CMakeFiles/rebuild_cache.dir
+/home/scarlet/streamVideo/code/sunxu/Interface_v4/xm_interface_v4/demo_c_cpp/build/CMakeFiles/test.dir
+/home/scarlet/streamVideo/code/sunxu/Interface_v4/xm_interface_v4/demo_c_cpp/build/CMakeFiles/edit_cache.dir
