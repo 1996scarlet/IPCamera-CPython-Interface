@@ -9,7 +9,8 @@
 
 ## 原理简要说明（Brief description of the principle）
 
-流程图 架构图
+流程图
+架构图
 文字说明
 
 ## 取帧方法（The way to get frame）
@@ -49,7 +50,7 @@ command = ['ffmpeg',
 
 # 初始化子进程
 import subprocess as sp
-proc = sp.Popen(command, stdin=sp.PIPE,shell=False)
+proc = sp.Popen(command, stdin=sp. PIPE, shell=False)
 
 # 帧数据写入内存管道
 while True:
