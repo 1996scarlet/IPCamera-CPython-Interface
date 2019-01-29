@@ -1,4 +1,2 @@
 .vscode/
-settings.json
-xm_interface_v4/CWrapper/build/
-xm_interface_v4/demo_c_cpp/build/
+build/

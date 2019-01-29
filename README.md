@@ -12,6 +12,8 @@
 流程图
 架构图
 文字说明
+xm_interface_v4/CWrapper/build/
+xm_interface_v4/demo_c_cpp/build/
 
 ## 取帧方法（The way to get frame）
 

@@ -1,3 +1,0 @@
-/home/scarlet/streamVideo/code/sunxu/Interface_v4/xm_interface_v4/CWrapper/build/CMakeFiles/rebuild_cache.dir
-/home/scarlet/streamVideo/code/sunxu/Interface_v4/xm_interface_v4/CWrapper/build/CMakeFiles/libXMCamera_v4.dir
-/home/scarlet/streamVideo/code/sunxu/Interface_v4/xm_interface_v4/CWrapper/build/CMakeFiles/edit_cache.dir
