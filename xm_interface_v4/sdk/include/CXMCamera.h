@@ -5,25 +5,38 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <iostream>
-#include <dirent.h>
+
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libavformat/avformat.h>
+#include <libavutil/imgutils.h>
+}
+
+#define HPR_ERROR 0
+#define HPR_OK 1
 
 class XMIPCamera
 {
 public:
-  int login();
-  int open();
-  int close();
-  cv::Mat get_current_frame_mat();
-  void start_real_play(int frames);
+  bool start();
+  bool stop();
+  cv::Mat current();
   XMIPCamera(char *IP, int Port, char *UserName, char *Password);
 
+protected:
+  bool initFFMPEG();
+  bool login();
+  bool logout();
+  bool open();
+  bool close();
+
 private:
-  int initFFMPEG();
   char *m_ip;       // ip address of the camera
   int m_port;       // port
   char *m_username; // username
   char *m_password; // password
-  int m_lRealPlayHandle;
+  long m_lRealPlayHandle;
   long m_lUserID;
-  uint8_t *current_data_point;
 };

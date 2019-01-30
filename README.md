@@ -1,39 +1,36 @@
 
-# IPCamera-CPython-Interface-v3
+# IPCamera-CPython-Interface-v4
 
 ## 这是什么东西（What is this）
 
-> * 兼容主流海康和雄迈IPC的适用于C++和python的帧数据获取接口
-> * 通过python进行海康（雄迈）IP相机连接、登录、注册回调、解码（FFMPEG）、取帧
-> * 支持python2和python3（编译时修改CMAKE的`TARGET_PYTHON_VERSION`）
+> * 兼容主流海康和雄迈IPC的适用于C、C++和python2/3的帧数据获取接口
+> * 简化海康和雄迈IPC连接、登录、注册回调、解码（FFMPEG）、取帧的步骤
+> * 通过Ctypes支持python2和python3（编译时修改CMAKE的`TARGET_PYTHON_VERSION`）
 
 ## 原理简要说明（Brief description of the principle）
 
 流程图
 架构图
 文字说明
-xm_interface_v4/CWrapper/build/
-xm_interface_v4/demo_c_cpp/build/
 
-## 取帧方法（The way to get frame）
+## C/C++取帧方法（The way for C/C++ to get frame）
 
-```python
-from pycext import IPCamera # 引用`pycext.so`
-cp = IPCamera("ip", port, "username", "password", "") # port为整型数
-cp.PrintInfo() # 可选：打印信息
-cp.login() # 登录
-cp.open() # 注册回调
+```C++
+XMIPCamera cp = XMIPCamera("10.41.0.208", 34567, "admin", "");
+cp.login();
+cp.open();
 
-time.sleep(2) # 等待第一个I帧处理完毕 推荐等待不小于1秒
+sleep(2);
+for (auto i = 0; i < 500; i++)
+{
+    imshow("display", cp.get_current_frame_mat());
+    waitKey(1);
+}
 
-while True: # 如果CPU处理能力很强 建议设置循环等待间隔
-    frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
-    # 可选择安装：`opencv-python` 和 `opencv-contrib-python`
-    cv2.imshow("OKOK", frame)
-    cv2.waitKey(1)
+cp.close();
 ```
 
-## 配合内存管道推流（python + ffmpeg -> rtmp）
+## Python取帧配合内存管道推流（python + ffmpeg -> rtmp）
 
 ```python
 # 首先配置命令如下
@@ -54,9 +51,19 @@ command = ['ffmpeg',
 import subprocess as sp
 proc = sp.Popen(command, stdin=sp. PIPE, shell=False)
 
+from pycext import IPCamera # 引用`pycext.so`
+cp = IPCamera("ip", port, "username", "password", "") # port为整型数
+cp.PrintInfo() # 可选：打印信息
+cp.login() # 登录
+cp.open() # 注册回调
+
+time.sleep(2) # 等待第一个I帧处理完毕 推荐等待不小于1秒
 # 帧数据写入内存管道
 while True:
     frame = np.asarray(cp.queryframe('array')).reshape(1080,1920,3)
+    # 可选择安装：`opencv-python` 和 `opencv-contrib-python
+    cv2.imshow("OKOK", frame)
+    cv2.waitKey(1)
     proc.stdin.write(frame.tostring())
 ```
 
@@ -65,8 +72,8 @@ while True:
 > 尽管本repo提供基于以下环境的预编译so文件
 * `Ubuntu 18.04.1 LTS`（国内镜像）
 * `Python 3.6.X`（apt下载）
-* `Opencv 3.4.X`（源码编译）
-* `FFmpeg 3.4.X`（源码编译）
+* `Opencv 4.0.X`（源码编译）
+* `FFmpeg 4.1.X`（源码编译）
 
 > 但还是建议额外安装以下依赖环境自行编译
 * `numpy-dev`
@@ -86,7 +93,7 @@ while True:
 ## 注意事项（Cautious）
 
 * 使用内存管道方法配合`nginx_rtmp_module`推流延迟较高，需要低延迟推流可以考虑使用[基于类MJPEG协议的推流框架](...)
-* v3版本是针对`ffmpeg 3.X`和`opencv 3.X`设计的封装方案，且c++和python封装为两个独立的工程，二者API实现方式存在细微差别，现已不再维护，推荐使用[主分支上的新版本](https://github.com/1996scarlet/IPCamera-CPython-Interface)
+* v4版本是针对`ffmpeg 4.X`和`opencv 4.X`设计的封装方案，且c++和python封装为两个独立的工程，二者API实现方式存在细微差别，现已不再维护，推荐使用[主分支上的新版本](https://github.com/1996scarlet/IPCamera-CPython-Interface)
 * 编译安装`ffmpeg`前需要设置`./configure --enbale-shared`来防止`opencv`编译过程无法引用动态库导致的`video.so`相关错误
 * 编译安装`opencv`时若出现`xfeatures2d`相关错误，需要[重新下载`curl`](https://curl.haxx.se/download.html)并按照如下步骤编译安装
     1. cd /root/Downloads/curl

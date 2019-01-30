@@ -1,5 +1,5 @@
 #include <Python.h>
-// #include "../sdk/include/CXMCamera.h"
+#include "CXMCamera.h"
 
 #include <iostream>
 

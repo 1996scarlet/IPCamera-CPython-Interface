@@ -7,17 +7,13 @@ using namespace cv;
 int main(int argc, char **argv)
 {
     XMIPCamera cp = XMIPCamera("10.41.0.208", 34567, "admin", "");
-
     cp.login();
     cp.open();
 
     sleep(2);
 
-    // // cp.start_real_play(200);
-    int i = 0;
-    while (i++ < 5000)
+    for (auto i = 0; i < 500; i++)
     {
-        // cout << "10.41.0.211" << endl;
         imshow("display", cp.get_current_frame_mat());
         waitKey(1);
     }
@@ -25,5 +21,3 @@ int main(int argc, char **argv)
     cp.close();
     return 0;
 }
-
- 
