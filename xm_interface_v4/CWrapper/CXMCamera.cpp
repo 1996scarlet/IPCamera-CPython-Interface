@@ -10,6 +10,8 @@ const AVCodec *codec;
 AVCodecContext *c = nullptr;
 AVPacket *pkt;
 
+// cv::Mat wall = imread("/home/scarlet/Pictures/wallpaper.png");
+
 auto debug_line = [](string content) { cout << "==========" << content << "==========" << endl; };
 
 XMIPCamera::XMIPCamera(char *IP, int Port, char *UserName, char *Password)
@@ -60,6 +62,7 @@ int RealDataCallBack_V2(long lRealHandle, const PACKET_INFO_EX *pFrame, long dwU
                   pRGBFrame->data, pRGBFrame->linesize);
 
         cvImg = Mat(pYUVFrame->height, pYUVFrame->width, CV_8UC3, *(pRGBFrame->data));
+
         sws_freeContext(img_convert_ctx);
     }
 
@@ -207,20 +210,28 @@ bool XMIPCamera::start()
 
 bool XMIPCamera::stop()
 {
-    return logout() && stop();
+    return close() && logout();
 }
 
 Mat XMIPCamera::current()
 {
-    // cvImg = imread("/home/scarlet/Downloads/wallpaper.png");
+    // cvImg = imread("/home/scarlet/Pictures/wallpaper.png");
+    // cvImg = wall;
     return cvImg;
 }
 
-// ======================C/Python Interface defined========================
-extern "C"
+ostream &operator<<(ostream &output, XMIPCamera &xmcp)
 {
-    XMIPCamera *XMIPCamera_init(char *pa1, int pa2, char *pa3, char *pa4) { return new XMIPCamera(pa1, pa2, pa3, pa4); }
-    int XMIPCamera_start(XMIPCamera *xmcp) { return xmcp->start(); }
-    int XMIPCamera_stop(XMIPCamera *xmcp) { return xmcp->stop(); }
-    void XMIPCamera_frame(XMIPCamera *xmcp, int rows, int cols, unsigned char *frompy) { memcpy(frompy, xmcp->current().data, rows * cols * 3); }
+    output << xmcp.m_ip << "-"
+           << xmcp.m_port << "-"
+           << xmcp.m_username << "-"
+           << xmcp.m_password;
+
+    return output;
 }
+
+// ======================C/Python Interface defined========================
+XMIPCamera *XMIPCamera_init(char *ip, int port, char *name, char *pass) { return new XMIPCamera(ip, port, name, pass); }
+int XMIPCamera_start(XMIPCamera *xmcp) { return xmcp->start(); }
+int XMIPCamera_stop(XMIPCamera *xmcp) { return xmcp->stop(); }
+void XMIPCamera_frame(XMIPCamera *xmcp, int rows, int cols, unsigned char *frompy) { memcpy(frompy, xmcp->current().data, rows * cols * 3); }

@@ -1,53 +1,35 @@
 # Export shared object to C++ in Linux
 
-## 注意事项
-编译需要ffmpeg、opencv
-编译时需要libxmnetsdk.so & netsdk.h文件
-建议编译时的目录结构如下所示
-	.
-	├── CMakeLists.txt
-	├── CMakeModules
-	│   └── FindFFmpeg.cmake
-	├── CXMCamera.cpp
-	├── CXMCamera.h
-	├── libxmnetsdk.so
-	├── netsdk.h
-	└── README.MD
-
 ## 如何编译
-        mkdir build
-        cd build
-        cmake .. # gen the makefile
-        make     # gen *.so
 
-生成的`libXMCamera.so`就在`/../demo_c_cpp`文件夹内
+```shell
+mkdir build
+cd build
+cmake .. # gen the makefile
+make     # gen *.so
+```
 
-## 简单使用
-	#include "CXMCamera.h"
-	#include <iostream>
-	#include <unistd.h>
+> 生成的`libXMCamera_v4.so`就在`/../sdk/interface/`文件夹内
 
-	using namespace std;
-	using namespace cv;
-	int main()
-	{
-	    XMIPCamera cp = XMIPCamera("10.41.0.211", 34567, "admin", "");
+## API说明
 
-	    cp.login();
-	    cp.open();
+> 针对C++程序的API
 
-	    sleep(2);
+```C++
+XMIPCamera(char *IP, int Port, char *UserName, char *Password); //构造函数
+bool start(); //初始化变量 登录 注册回调 打开回调
+bool stop(); //关闭回调 注销回调 登出 清除变量
+cv::Mat current(); //获取当前帧
+```
 
-	    int i = 0;
-	    while (i++ < 5000)
-	    {
-		imshow("display", cp.get_current_frame_mat());
-		cvWaitKey(1);
-	    }
+> 针对C和Python程序的扩展API
 
-	    cp.close();
-	    return 0;
-	}
-
-## 输出位置
-请修改`set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../demo_c_cpp)`为合适位置
+```C++
+extern "C"
+{
+  XMIPCamera *XMIPCamera_init(char *ip, int port, char *name, char *pass); //扩展构造函数
+  int XMIPCamera_start(XMIPCamera *xmcp); //初始化变量 登录 注册回调 打开回调
+  int XMIPCamera_stop(XMIPCamera *xmcp); //关闭回调 注销回调 登出 清除变量
+  void XMIPCamera_frame(XMIPCamera *xmcp, int rows, int cols, unsigned char *frompy); //获取当前帧
+}
+```
