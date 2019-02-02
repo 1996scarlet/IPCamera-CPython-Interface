@@ -7,6 +7,10 @@
 > * 简化海康和雄迈IPC连接、登录、注册回调、解码（FFMPEG）、取帧的步骤
 > * 通过Ctypes支持python2和python3（编译时修改CMAKE的`TARGET_PYTHON_VERSION`）
 
+## 性能对比（Performance comparison）
+
+图表
+
 ## 原理简要说明（Brief description of the principle）
 
 流程图

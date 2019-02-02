@@ -7,7 +7,7 @@ cv::Mat cvImg;
 AVFrame *pYUVFrame;
 AVFrame *pRGBFrame;
 const AVCodec *codec;
-AVCodecContext *c = nullptr;
+AVCodecContext *c;
 AVPacket *pkt;
 
 // cv::Mat wall = imread("/home/scarlet/Pictures/wallpaper.png");
