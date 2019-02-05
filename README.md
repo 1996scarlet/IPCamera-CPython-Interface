@@ -9,9 +9,7 @@
 
 ## 原理简要说明（Brief description of the principle）
 
-流程图
-架构图
-文字说明
+![一张图看懂取帧接口处理流程](process.png)
 
 ## 取帧方法（The way to get frame）
 
