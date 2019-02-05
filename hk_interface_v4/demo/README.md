@@ -1,25 +1,86 @@
 # 海康C++接口测试demo
 
-## 通过cv2连续显示内存中解码后的H264-stream中图像
+## C++的调用方式
 
 ```C++
-#include "../sdk/include/CHKCamera.h"
-#include <unistd.h>
-using namespace std;
-int main()
+HKIPCamera *hkcp = new HKIPCamera("ip", port, "name", "pass");
+cout << *hkcp << endl;
+hkcp->start();
+
+sleep(2);
+for (auto i = 0; i < 5; i++)
 {
-    HKIPCamera hkpc("10.41.0.236", 8000, "admin", "humanmotion01");
-    hkpc.login();
-    hkpc.open();
-    sleep(1);
-    int i=0;
-    while (i++<200)
-    {
-        cv::imshow("OKK", hkpc.get_current_frame_mat());
-        cv::waitKey(1);
-    }
-    hkpc.close();
+    imshow("display", hkcp->current());
+    waitKey(1);
 }
+
+hkcp->stop();
+delete (hkcp);
+```
+
+## C的调用方式
+
+```C
+HKIPCamera *c_hkcp = HKIPCamera_init("10.41.0.208", 34567, "admin", "");
+HKIPCamera_start(c_hkcp);
+
+sleep(2);
+for (auto i = 0; i < 50; i++)
+{
+    imshow("c_display", c_hkcp->current());
+    waitKey(1);
+}
+
+HKIPCamera_stop(c_hkcp);
+free c_hkcp;
+```
+
+## Python的调用方式
+
+> 首先引用so文件
+
+```Python
+lib = C.cdll.LoadLibrary('../sdk/interface/libHKCamera_v4.so')
+```
+
+> （可选）定义一个封装类
+
+```Python
+class HKIPCamera(object):
+
+    def __init__(self, ip, port, name, password):
+        self.obj = lib.HKIPCamera_init(ip, port, name, password)
+
+    def start(self):
+        lib.HKIPCamera_start(self.obj)
+
+    def stop(self):
+        lib.HKIPCamera_stop(self.obj)
+
+    def frame(self, rows=1080, cols=1920):
+        res = np.zeros(dtype=np.uint8, shape=(rows, cols, 3))
+
+        lib.HKIPCamera_frame(self.obj, rows, cols,
+                             res.ctypes.data_as(C.POINTER(C.c_ubyte)))
+
+        return res
+```
+
+> 初始化并调用 注意：`b'IP'`中的`b`不可省略
+
+```Python
+hkcp = HKIPCamera(b'IP', PORT, b'NAME', b'PASS')
+hkcp.start()
+
+# start_time = time.time()
+
+for i in range(1000):
+    cv2.imshow("", hkcp.frame())
+    cv2.waitKey(1)
+    # cp.frame()
+
+# print(time.time() - start_time)
+hkcp.stop()
 ```
 
 ## 海康错误代码FAQ
