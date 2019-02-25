@@ -9,11 +9,13 @@
 
 ## 性能对比（Performance comparison）
 
-图表
+![一张图看懂取帧接口版本差异](different.png)
 
 ## 原理简要说明（Brief description of the principle）
 
 ![一张图看懂取帧接口处理流程](process.png)
+
+* [数据驱动层IPC取帧接口说明.pptx](数据驱动层IPC取帧接口说明.pptx)
 
 ## C/C++取帧方法（The way for C/C++ to get frame）
 
