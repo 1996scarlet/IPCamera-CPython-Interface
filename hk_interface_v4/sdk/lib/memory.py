@@ -5,7 +5,7 @@ import cv2
 import numpy as np
 import ctypes as C
 
-lib = C.cdll.LoadLibrary('../sdk/lib/libHKCamera_v4.so')
+lib = C.cdll.LoadLibrary('./libHKCamera_v4.so')
 
 
 class HKIPCamera(object):
@@ -30,6 +30,9 @@ class HKIPCamera(object):
 
 hkcp = HKIPCamera(b"10.41.0.231", 8000, b"admin", b"humanmotion01")
 hkcp.start()
+
+cv2.namedWindow('display', cv2.WINDOW_AUTOSIZE)
+time.sleep(1)
 
 # start_time = time.time()
 

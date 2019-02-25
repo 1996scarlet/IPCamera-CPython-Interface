@@ -3,7 +3,8 @@
 using namespace cv;
 using namespace std;
 
-// cv::Mat wall = imread("/home/scarlet/Pictures/wallpaper.png");
+// cv::Mat wall;
+// = imread("/home/scarlet/Pictures/wallpaper.png");
 
 auto debug_line = [](string content) { cout << "==========" << content << "==========" << endl; };
 
@@ -19,7 +20,7 @@ void g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pstruPackInf
 {
     HKIPCamera *hkcp = (HKIPCamera *)pUser;
     if (pstruPackInfo->dwPacketType == 11)
-        return;
+        return;    
 
     hkcp->pkt->size = pstruPackInfo->dwPacketSize;
     hkcp->pkt->data = (uint8_t *)pstruPackInfo->pPacketBuffer;
@@ -36,7 +37,7 @@ void g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pstruPackInf
         sws_scale(hkcp->img_convert_ctx, (uint8_t const *const *)hkcp->pYUVFrame->data,
                   hkcp->pYUVFrame->linesize, 0, FRAME_HEIGHT,
                   hkcp->pRGBFrame->data, hkcp->pRGBFrame->linesize);
-
+        
         hkcp->cvImg = Mat(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3, *(hkcp->pRGBFrame->data));
     }
 }
@@ -96,14 +97,15 @@ bool HKIPCamera::login()
     initFFMPEG();
 
     NET_DVR_DEVICEINFO struDeviceInfo;
+    
     m_lUserID = NET_DVR_Login(m_ip, m_port, m_username, m_password, &struDeviceInfo);
 
-    if (m_lUserID > 0)
+    if (m_lUserID >= 0)
         return HPR_OK;
     else
     {
         debug_line("login wrong");
-        cout << "Login ID = : " << m_lUserID << "; Error Code = :" << NET_DVR_GetLastError() << endl;
+        cout << "Login ID = " << m_lUserID << "; Error Code = " << NET_DVR_GetLastError() << endl;
         return HPR_ERROR;
     }
 }
@@ -112,7 +114,7 @@ bool HKIPCamera::open()
 {
     NET_DVR_PREVIEWINFO struPlayInfo = {0};
     struPlayInfo.hPlayWnd = 0;     //需要 SDK 解码时句柄设为有效值,仅取流不解码时可设为空
-    struPlayInfo.lChannel = 0;     //预览通道号
+    struPlayInfo.lChannel = 1;     //预览通道号
     struPlayInfo.dwStreamType = 0; //0-主码流,1-子码流,2-码流 3,3-码流 4,以此类推
     struPlayInfo.dwLinkMode = 1;   //0- TCP 方式,1- UDP 方式,2- 多播方式,3- RTP 方式,4-RTP/RTSP,5-RSTP/HTTP
     struPlayInfo.bBlocked = 0;     //0- 非阻塞取流,1- 阻塞取流
@@ -123,7 +125,7 @@ bool HKIPCamera::open()
     {
         debug_line("RealPlay started!");
         return HPR_OK;
-    }
+    }    
 
     cout << "预览开始或回调设置错误：" << NET_DVR_GetLastError() << endl;
     NET_DVR_Logout(m_lUserID);
@@ -169,7 +171,7 @@ bool HKIPCamera::stop()
 
 Mat HKIPCamera::current()
 {
-    cvImg = imread("/home/scarlet/Pictures/wallpaper.png");
+    // cvImg = imread("/home/scarlet/Pictures/wallpaper.png");
     // cvImg = wall;
     return cvImg;
 }

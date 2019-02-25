@@ -3,7 +3,7 @@
 using namespace std;
 int main()
 {
-    HKIPCamera *hkcp = new HKIPCamera("10.41.0.236", 8000, "admin", "humanmotion01");
+    HKIPCamera *hkcp = new HKIPCamera("10.41.0.231", 8000, "admin", "humanmotion01");
 
     cout << *hkcp << endl;
 
@@ -18,8 +18,9 @@ int main()
     hkcp->start();
     sleep(1);
 
-    for (auto i = 0; i < 50; i++)
+    for (auto i = 0; i < 2000; i++)
     {
+        //cv::imwrite("display.jpg", hkcp->current());
         cv::imshow("display", hkcp->current());
         cv::waitKey(1);
     }
