@@ -16,11 +16,11 @@
 
 ## 性能对比（Performance comparison）
 
-![一张图看懂取帧接口版本差异](different.png)
+![一张图看懂取帧接口版本差异](./introduction/different.png)
 
 ## 原理简要说明（Brief description of the principle）
 
-![一张图看懂取帧接口处理流程](process.png)
+![一张图看懂取帧接口处理流程](./introduction/process.png)
 
 * [数据驱动层IPC取帧接口说明.pptx](数据驱动层IPC取帧接口说明.pptx)
 
