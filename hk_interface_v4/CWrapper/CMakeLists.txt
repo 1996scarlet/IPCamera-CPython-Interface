@@ -21,7 +21,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/include)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/lib)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/lib/HCNetSDKCom)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../sdk/lib)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../sdk/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../demo/HCNetSDKCom)
 
 add_library(${PROJECT_NAME} SHARED CHKCamera.cpp)
 set_target_properties(libHKCamera_v4 PROPERTIES PREFIX "")

@@ -2,42 +2,28 @@
 import os
 import time
 import cv2
-import numpy as np
-import ctypes as C
 
-lib = C.cdll.LoadLibrary('../sdk/lib/libHKCamera_v4.so')
-
-
-class HKIPCamera(object):
-
-    def __init__(self, ip, port, name, password):
-        self.obj = lib.HKIPCamera_init(ip, port, name, password)
-
-    def start(self):
-        lib.HKIPCamera_start(self.obj)
-
-    def stop(self):
-        lib.HKIPCamera_stop(self.obj)
-
-    def frame(self, rows=1080, cols=1920):
-        res = np.zeros(dtype=np.uint8, shape=(rows, cols, 3))
-
-        lib.HKIPCamera_frame(self.obj, rows, cols,
-                             res.ctypes.data_as(C.POINTER(C.c_ubyte)))
-
-        return res
-
+from interface import HKIPCamera
 
 hkcp = HKIPCamera(b"10.41.0.231", 8000, b"admin", b"humanmotion01")
 hkcp.start()
 
-# start_time = time.time()
+while True:
+    cv2.imshow("display", hkcp.frame(rows=540, cols=960))
+    # cv2.imshow("display", hkcp.frame(rows=1080, cols=1920))
+    k = cv2.waitKey(38) & 0xff
+    if k == ord('q') or k == 27:
+        break
 
-for i in range(100):
-    # cv2.imwrite("%d.jpg" % i, hkcp.frame())
-    cv2.imshow("display", hkcp.frame())
-    cv2.waitKey(1)
-    # cp.frame()
+'''
+for i in range(1000):
+    # cv2.imwrite("./ppl/%d.jpg" % i, hkcp.frame())
+    # cv2.imshow("display", hkcp.frame(rows=540, cols=960))
+    # cv2.waitKey(40)
+    start_time = time.time()
+    hkcp.frame()
+    print(time.time() - start_time)
 
-# print(time.time() - start_time)
+'''
+
 hkcp.stop()

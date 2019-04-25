@@ -5,8 +5,8 @@ using namespace std;
 
 // cv::Mat wall;
 // = imread("/home/scarlet/Pictures/wallpaper.png");
-
-auto debug_line = [](string content) { cout << "==========" << content << "==========" << endl; };
+INIT_DEBUG
+INIT_TIMER
 
 HKIPCamera::HKIPCamera(char *IP, int Port, char *UserName, char *Password)
 {
@@ -14,31 +14,42 @@ HKIPCamera::HKIPCamera(char *IP, int Port, char *UserName, char *Password)
     m_port = Port;
     m_username = UserName;
     m_password = Password;
+    cvImg = Mat(Size(MAX_FRAME_HEIGHT, MAX_FRAME_WIDTH), CV_8UC3);
 }
 
 void g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pstruPackInfo, void *pUser)
 {
+
     HKIPCamera *hkcp = (HKIPCamera *)pUser;
     if (pstruPackInfo->dwPacketType == 11)
-        return;    
+        return;
 
     hkcp->pkt->size = pstruPackInfo->dwPacketSize;
     hkcp->pkt->data = (uint8_t *)pstruPackInfo->pPacketBuffer;
 
     int ret = avcodec_send_packet(hkcp->c, hkcp->pkt);
 
+    // START_TIMER
     while (ret >= 0)
     {
         ret = avcodec_receive_frame(hkcp->c, hkcp->pYUVFrame);
 
         if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+        {
+            // STOP_TIMER("HKIPCamera_frame")
             return;
+        }
 
-        sws_scale(hkcp->img_convert_ctx, (uint8_t const *const *)hkcp->pYUVFrame->data,
-                  hkcp->pYUVFrame->linesize, 0, FRAME_HEIGHT,
-                  hkcp->pRGBFrame->data, hkcp->pRGBFrame->linesize);
-        
-        hkcp->cvImg = Mat(FRAME_HEIGHT, FRAME_WIDTH, CV_8UC3, *(hkcp->pRGBFrame->data));
+        auto frame_height = hkcp->pYUVFrame->height;
+        auto frame_width = hkcp->pYUVFrame->width;
+
+        if (av_image_fill_arrays(hkcp->pRGBFrame->data, hkcp->pRGBFrame->linesize, hkcp->buffer, AV_PIX_FMT_BGR24, frame_width, frame_height, 1))
+        {
+            auto img_convert_ctx = sws_getContext(frame_width, frame_height, AV_PIX_FMT_YUV420P, frame_width, frame_height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
+            sws_scale(img_convert_ctx, (uint8_t const *const *)hkcp->pYUVFrame->data, hkcp->pYUVFrame->linesize, 0, frame_height, hkcp->pRGBFrame->data, hkcp->pRGBFrame->linesize);
+            sws_freeContext(img_convert_ctx);
+            hkcp->cvImg = Mat(frame_height, frame_width, CV_8UC3, *(hkcp->pRGBFrame->data));
+        }
     }
 }
 
@@ -61,6 +72,7 @@ bool HKIPCamera::initFFMPEG()
         fprintf(stderr, "Could not allocate video codec context\n");
         return HPR_ERROR;
     }
+    c->thread_count = 2;
 
     if (avcodec_open2(c, codec, NULL) < 0)
     {
@@ -82,11 +94,8 @@ bool HKIPCamera::initFFMPEG()
         return HPR_ERROR;
     }
 
-    int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, FRAME_WIDTH, FRAME_HEIGHT, 1);
+    int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT, 1);
     buffer = (uint8_t *)av_malloc(numBytes * sizeof(uint8_t));
-    av_image_fill_arrays(pRGBFrame->data, pRGBFrame->linesize, buffer, AV_PIX_FMT_BGR24, FRAME_WIDTH, FRAME_HEIGHT, 1);
-
-    img_convert_ctx = sws_getContext(FRAME_WIDTH, FRAME_HEIGHT, AV_PIX_FMT_YUV420P, FRAME_WIDTH, FRAME_HEIGHT, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
 
     return HPR_OK;
 }
@@ -97,14 +106,14 @@ bool HKIPCamera::login()
     initFFMPEG();
 
     NET_DVR_DEVICEINFO struDeviceInfo;
-    
+
     m_lUserID = NET_DVR_Login(m_ip, m_port, m_username, m_password, &struDeviceInfo);
 
     if (m_lUserID >= 0)
         return HPR_OK;
     else
     {
-        debug_line("login wrong");
+        OUTPUT_DEBUG("login wrong");
         cout << "Login ID = " << m_lUserID << "; Error Code = " << NET_DVR_GetLastError() << endl;
         return HPR_ERROR;
     }
@@ -123,9 +132,9 @@ bool HKIPCamera::open()
 
     if (NET_DVR_SetESRealPlayCallBack(m_lRealPlayHandle, g_fPlayESCallBack, this))
     {
-        debug_line("RealPlay started!");
+        OUTPUT_DEBUG("RealPlay started!");
         return HPR_OK;
-    }    
+    }
 
     cout << "预览开始或回调设置错误：" << NET_DVR_GetLastError() << endl;
     NET_DVR_Logout(m_lUserID);
@@ -146,14 +155,13 @@ bool HKIPCamera::logout()
     NET_DVR_Cleanup();
 
     avcodec_free_context(&c);
-    sws_freeContext(img_convert_ctx);
 
     av_frame_free(&pYUVFrame);
     av_frame_free(&pRGBFrame);
     av_packet_free(&pkt);
     av_free(buffer);
 
-    debug_line("Finished");
+    OUTPUT_DEBUG("Finished");
     return HPR_OK;
 }
 
@@ -190,4 +198,11 @@ ostream &operator<<(ostream &output, HKIPCamera &hkcp)
 HKIPCamera *HKIPCamera_init(char *ip, int port, char *name, char *pass) { return new HKIPCamera(ip, port, name, pass); }
 int HKIPCamera_start(HKIPCamera *hkcp) { return hkcp->start(); }
 int HKIPCamera_stop(HKIPCamera *hkcp) { return hkcp->stop(); }
-void HKIPCamera_frame(HKIPCamera *hkcp, int rows, int cols, unsigned char *frompy) { memcpy(frompy, hkcp->current().data, rows * cols * 3); }
+void HKIPCamera_frame(HKIPCamera *hkcp, int rows, int cols, unsigned char *frompy)
+{
+    // START_TIMER
+    Mat frame;
+    resize(hkcp->current(), frame, cv::Size(cols, rows));
+    memcpy(frompy, frame.data, rows * cols * 3);
+    // STOP_TIMER("HKIPCamera_frame")
+}

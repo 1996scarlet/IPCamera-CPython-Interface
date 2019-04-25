@@ -28,7 +28,7 @@ class XMIPCamera(object):
         return res
 
 
-xmcp = XMIPCamera(b'10.41.0.208', 34567, b'admin', b'')
+xmcp = XMIPCamera(b'10.41.0.231', 34567, b'admin', b'')
 xmcp.start()
 
 # start_time = time.time()

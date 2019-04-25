@@ -3,16 +3,10 @@
 using namespace cv;
 using namespace std;
 
-cv::Mat cvImg;
-AVFrame *pYUVFrame;
-AVFrame *pRGBFrame;
-const AVCodec *codec;
-AVCodecContext *c;
-AVPacket *pkt;
+INIT_DEBUG
+INIT_TIMER
 
 // cv::Mat wall = imread("/home/scarlet/Pictures/wallpaper.png");
-
-auto debug_line = [](string content) { cout << "==========" << content << "==========" << endl; };
 
 XMIPCamera::XMIPCamera(char *IP, int Port, char *UserName, char *Password)
 {
@@ -20,19 +14,21 @@ XMIPCamera::XMIPCamera(char *IP, int Port, char *UserName, char *Password)
     m_port = Port;
     m_username = UserName;
     m_password = Password;
+    cvImg = Mat(Size(FRAME_HEIGHT, FRAME_WIDTH), CV_8UC3);
 }
 
 int RealDataCallBack_V2(long lRealHandle, const PACKET_INFO_EX *pFrame, long dwUser)
 {
+    XMIPCamera *xmcp = (XMIPCamera *)dwUser;
     if (pFrame->nPacketType == VIDEO_I_FRAME)
     {
-        pkt->size = pFrame->dwPacketSize - 16;
-        pkt->data = (uint8_t *)(pFrame->pPacketBuffer + 16);
+        xmcp->pkt->size = pFrame->dwPacketSize - 16;
+        xmcp->pkt->data = (uint8_t *)(pFrame->pPacketBuffer + 16);
     }
     else if (pFrame->nPacketType == VIDEO_P_FRAME)
     {
-        pkt->size = pFrame->dwPacketSize - 8;
-        pkt->data = (uint8_t *)pFrame->pPacketBuffer + 8;
+        xmcp->pkt->size = pFrame->dwPacketSize - 8;
+        xmcp->pkt->data = (uint8_t *)pFrame->pPacketBuffer + 8;
     }
     else
     {
@@ -40,33 +36,21 @@ int RealDataCallBack_V2(long lRealHandle, const PACKET_INFO_EX *pFrame, long dwU
         return TRUE;
     }
 
-    int numBytes = av_image_get_buffer_size(AV_PIX_FMT_BGR24, c->width, c->height, 1);
-
-    // int numBytes = avpicture_get_size(AV_PIX_FMT_BGR24, c->width, c->height);
-    uint8_t *buffer = (uint8_t *)av_malloc(numBytes * sizeof(uint8_t));
-    av_image_fill_arrays(pRGBFrame->data, pRGBFrame->linesize, buffer, AV_PIX_FMT_BGR24, c->width, c->height, 1);
-    // avpicture_fill((AVPicture *)pRGBFrame, buffer, AV_PIX_FMT_BGR24, c->width, c->height);
-
-    int ret = avcodec_send_packet(c, pkt);
+    int ret = avcodec_send_packet(xmcp->c, xmcp->pkt);
 
     while (ret >= 0)
     {
-        ret = avcodec_receive_frame(c, pYUVFrame);
-        struct SwsContext *img_convert_ctx = sws_getCachedContext(NULL, c->width, c->height, AV_PIX_FMT_YUV420P, c->width, c->height, AV_PIX_FMT_BGR24, SWS_BICUBIC, NULL, NULL, NULL);
+        ret = avcodec_receive_frame(xmcp->c, xmcp->pYUVFrame);
 
         if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
             return TRUE;
 
-        sws_scale(img_convert_ctx, (uint8_t const *const *)pYUVFrame->data,
-                  pYUVFrame->linesize, 0, c->height,
-                  pRGBFrame->data, pRGBFrame->linesize);
+        sws_scale(xmcp->img_convert_ctx, (uint8_t const *const *)xmcp->pYUVFrame->data,
+                  xmcp->pYUVFrame->linesize, 0, xmcp->pYUVFrame->height,
+                  xmcp->pRGBFrame->data, xmcp->pRGBFrame->linesize);
 
-        cvImg = Mat(pYUVFrame->height, pYUVFrame->width, CV_8UC3, *(pRGBFrame->data));
-
-        sws_freeContext(img_convert_ctx);
+        xmcp->cvImg = Mat(xmcp->pYUVFrame->height, xmcp->pYUVFrame->width, CV_8UC3, *(xmcp->pRGBFrame->data));
     }
-
-    av_free(buffer);
     return TRUE;
 }
 
@@ -89,6 +73,7 @@ bool XMIPCamera::initFFMPEG()
         fprintf(stderr, "Could not allocate video codec context\n");
         return HPR_ERROR;
     }
+    c->thread_count = 2;
 
     if (avcodec_open2(c, codec, NULL) < 0)
     {
@@ -234,4 +219,12 @@ ostream &operator<<(ostream &output, XMIPCamera &xmcp)
 XMIPCamera *XMIPCamera_init(char *ip, int port, char *name, char *pass) { return new XMIPCamera(ip, port, name, pass); }
 int XMIPCamera_start(XMIPCamera *xmcp) { return xmcp->start(); }
 int XMIPCamera_stop(XMIPCamera *xmcp) { return xmcp->stop(); }
-void XMIPCamera_frame(XMIPCamera *xmcp, int rows, int cols, unsigned char *frompy) { memcpy(frompy, xmcp->current().data, rows * cols * 3); }
+void XMIPCamera_frame(XMIPCamera *xmcp, int rows, int cols, unsigned char *frompy)
+{
+    // START_TIMER
+    Mat frame;
+    // if (hkcp->cvImg.size().width != cols)
+    resize(xmcp->current(), frame, cv::Size(cols, rows));
+    memcpy(frompy, frame.data, rows * cols * 3);
+    // STOP_TIMER("HKIPCamera_frame")
+}
