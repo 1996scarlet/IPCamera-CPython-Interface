@@ -1,4 +1,4 @@
-#include "../sdk/include/CHKCamera.h"
+#include "CHKCamera.h"
 #include <unistd.h>
 using namespace std;
 int main()
@@ -18,7 +18,7 @@ int main()
     hkcp->start();
     sleep(1);
 
-    for (auto i = 0; i < 2000; i++)
+    for (auto i = 0; i < 1000; i++)
     {
         //cv::imwrite("display.jpg", hkcp->current());
         cv::imshow("display", hkcp->current());

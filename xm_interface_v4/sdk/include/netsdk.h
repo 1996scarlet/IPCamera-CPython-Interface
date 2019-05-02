@@ -5484,7 +5484,7 @@ typedef void (CALL_METHOD *fTransComCallBack) (long lLoginID, long lTransComType
 typedef void (CALL_METHOD *fDisConnect)(long lLoginID, char *pchDVRIP, long nDVRPort, unsigned long dwUser);
 //ԭʼ���ݻص�ԭ��
 typedef int(CALL_METHOD *fRealDataCallBack) (long lRealHandle, long dwDataType, unsigned char *pBuffer,long lbufsize,long dwUser);
-typedef int(CALL_METHOD *fRealDataCallBack_V2) (long lRealHandle, const PACKET_INFO_EX *pFrame, long dwUser);
+typedef int(CALL_METHOD *fRealDataCallBack_V2) (long lRealHandle, const PACKET_INFO_EX *pFrame, void* dwUser);
 
 // �ط�¼����Ȼص�ԭ��
 typedef void(CALL_METHOD *fDownLoadPosCallBack) (long lPlayHandle, long lTotalSize, long lDownLoadSize, long dwUser);
@@ -5788,7 +5788,7 @@ H264_DVR_API bool CALL_METHOD H264_DVR_SetRealDataCallBack(long lRealHandle,fRea
 /*
 	����:���ݾ�������������������֡�ľ�����Ϣ,������H264_DVR_SetRealDataCallBack��ͬ
 */
-H264_DVR_API bool CALL_METHOD H264_DVR_SetRealDataCallBack_V2(long lRealHandle,fRealDataCallBack_V2 cbRealData, long dwUser);
+H264_DVR_API bool CALL_METHOD H264_DVR_SetRealDataCallBack_V2(long lRealHandle,fRealDataCallBack_V2 cbRealData, void* dwUser);
 
 /*
 	����:����ص�����,�ú�����Ҫ��H264_DVR_StopRealPlayǰ����

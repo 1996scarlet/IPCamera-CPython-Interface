@@ -19,25 +19,13 @@
 
 > 用于存放海康相关SDK文件和C++接口生成的`libHKCamera.so`文件
 
-```bash
+```shell
 .
-|-- HCNetSDKCom
-|   |-- libHCAlarm.so
-|   |-- libHCCoreDevCfg.so
-|   |-- libHCDisplay.so
-|   |-- libHCGeneralCfgMgr.so
-|   |-- libHCIndustry.so
-|   |-- libHCPlayBack.so
-|   |-- libHCPreview.so
-|   |-- libHCVoiceTalk.so
-|   |-- libStreamTransClient.so
-|   |-- libSystemTransform.so
-|   |-- libanalyzedata.so
-|   `-- libiconv2.so
-|-- libAudioRender.so
+|-- libanalyzedata.so
+|-- libHCCoreDevCfg.so
 |-- libHCCore.so
-|-- libPlayCtrl.so
-|-- libSuperRender.so
 |-- libhcnetsdk.so
-`-- libhpr.so
+|-- libHCPreview.so
+|-- libhpr.so
+`-- SDK-Archived.tar.gz
 ```

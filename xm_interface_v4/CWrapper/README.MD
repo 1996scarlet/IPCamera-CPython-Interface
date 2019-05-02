@@ -6,7 +6,7 @@
 mkdir build
 cd build
 cmake .. # gen the makefile
-make     # gen *.so
+sudo make     # gen *.so
 ```
 
 > 生成的`libXMCamera_v4.so`就在`/../sdk/interface/`文件夹内

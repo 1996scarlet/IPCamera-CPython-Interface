@@ -1,4 +1,4 @@
-#include "../sdk/include/CHKCamera.h"
+#include "CHKCamera.h"
 
 using namespace cv;
 using namespace std;
@@ -19,7 +19,6 @@ HKIPCamera::HKIPCamera(char *IP, int Port, char *UserName, char *Password)
 
 void g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pstruPackInfo, void *pUser)
 {
-
     HKIPCamera *hkcp = (HKIPCamera *)pUser;
     if (pstruPackInfo->dwPacketType == 11)
         return;

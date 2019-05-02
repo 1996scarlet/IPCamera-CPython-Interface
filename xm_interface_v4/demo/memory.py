@@ -28,14 +28,20 @@ class XMIPCamera(object):
         return res
 
 
-xmcp = XMIPCamera(b'10.41.0.231', 34567, b'admin', b'')
+xmcp = XMIPCamera(b'10.41.0.199', 34567, b'admin', b'')
 xmcp.start()
 
 # start_time = time.time()
+while True:
+    cv2.imshow("display", xmcp.frame(rows=540, cols=960))
+    # cv2.imshow("display", hkcp.frame(rows=1080, cols=1920))
+    k = cv2.waitKey(36) & 0xff
+    if k == ord('q') or k == 27:
+        break
 
-for i in range(1000):
-    cv2.imshow("", xmcp.frame())
-    cv2.waitKey(1)
+# for i in range(1000):
+#     cv2.imshow("", xmcp.frame())
+#     cv2.waitKey(1)
     # cp.frame()
 
 # print(time.time() - start_time)

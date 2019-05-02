@@ -12,7 +12,7 @@
 |   `-- netsdk.h
 ```
 
-## 文件夹-interface
+<!-- ## 文件夹-interface
 
 > 用于存放针对python、C、C++通用的`libXMCamera_v4.so`
 
@@ -20,7 +20,7 @@
 .
 |-- interface
 |   `-- libXMCamera_v4.so
-```
+``` -->
 
 ## 文件夹-x86、x64
 

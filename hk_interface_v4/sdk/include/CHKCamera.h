@@ -5,6 +5,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <iostream>
+#include <chrono>
 
 extern "C"
 {
@@ -14,11 +15,31 @@ extern "C"
 #include <libavutil/imgutils.h>
 }
 
+#define TIMING
+#ifdef TIMING
+#define INIT_TIMER auto start = std::chrono::high_resolution_clock::now();
+#define START_TIMER start = std::chrono::high_resolution_clock::now();
+#define STOP_TIMER(name) std::cout << "RUNTIME of " << name << ": " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() << " ms " << std::endl;
+#else
+#define INIT_TIMER
+#define START_TIMER
+#define STOP_TIMER(name)
+#endif
+
+#define DEBUG
+#ifdef TIMING
+#define INIT_DEBUG auto debug_line = [](string content) { cout << "==========" << content << "==========" << endl; };
+#define OUTPUT_DEBUG(content) debug_line(content);
+#else
+#define INIT_DEBUG
+#define OUTPUT_DEBUG(content)
+#endif
+
 #define HPR_ERROR 0
 #define HPR_OK 1
 
-#define FRAME_WIDTH 1920
-#define FRAME_HEIGHT 1080
+#define MAX_FRAME_WIDTH 1920
+#define MAX_FRAME_HEIGHT 1080
 
 class HKIPCamera
 {
@@ -38,8 +59,8 @@ protected:
 	bool close();
 
 private:
-	char *m_ip;				// ip address of the camera
-	int m_port;				// port
+	char *m_ip;		  // ip address of the camera
+	int m_port;		  // port
 	char *m_username; // username
 	char *m_password; // password
 	long m_lRealPlayHandle;
@@ -48,7 +69,7 @@ private:
 	uint8_t *buffer; //for sws fill picture
 	AVCodecContext *c;
 	AVPacket *pkt;
-	struct SwsContext *img_convert_ctx;
+	// struct SwsContext *img_convert_ctx;
 	const AVCodec *codec;
 	cv::Mat cvImg;
 	AVFrame *pYUVFrame;

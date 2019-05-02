@@ -1,7 +1,7 @@
 import numpy as np
 import ctypes as C
 
-lib = C.cdll.LoadLibrary('./HCNetSDKCom/libHKCamera_v4.so')
+lib = C.cdll.LoadLibrary('libHKCamera_v4.so')
 
 class HKIPCamera(object):
 

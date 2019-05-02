@@ -17,10 +17,11 @@ endif (FFMPEG_FOUND)
 #set(CMAKE_C_FLAGS "-fPIC")   #c
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/include)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/x64)
+# link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../sdk/x64)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../sdk/interface)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../sdk/interface)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY /usr/lib)
 
 add_library(${PROJECT_NAME} SHARED CXMCamera.cpp)
 set_target_properties(libXMCamera_v4 PROPERTIES PREFIX "")
-target_link_libraries(${PROJECT_NAME} ${FFMPEG_LIBRARIES} ${OpenCV_LIBS} ${SWSCALE_LIBRARIES} libxmnetsdk.so libpthread.so libavformat.so libavutil.so libswscale.so libavcodec.so)
+target_link_libraries(${PROJECT_NAME} ${FFMPEG_LIBRARIES} ${OpenCV_LIBS} ${SWSCALE_LIBRARIES} libxmnetsdk.so libpthread.so)
