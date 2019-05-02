@@ -176,11 +176,13 @@ bool HKIPCamera::stop()
     return close() && logout();
 }
 
-Mat HKIPCamera::current()
+Mat HKIPCamera::current(int rows, int cols)
 {
     // cvImg = imread("/home/scarlet/Pictures/wallpaper.png");
     // cvImg = wall;
-    return cvImg;
+    Mat frame;
+    resize(cvImg, frame, cv::Size(cols, rows));
+    return frame;
 }
 
 ostream &operator<<(ostream &output, HKIPCamera &hkcp)
@@ -200,8 +202,6 @@ int HKIPCamera_stop(HKIPCamera *hkcp) { return hkcp->stop(); }
 void HKIPCamera_frame(HKIPCamera *hkcp, int rows, int cols, unsigned char *frompy)
 {
     // START_TIMER
-    Mat frame;
-    resize(hkcp->current(), frame, cv::Size(cols, rows));
-    memcpy(frompy, frame.data, rows * cols * 3);
+    memcpy(frompy, (hkcp->current(rows, cols)).data, rows * cols * 3);
     // STOP_TIMER("HKIPCamera_frame")
 }

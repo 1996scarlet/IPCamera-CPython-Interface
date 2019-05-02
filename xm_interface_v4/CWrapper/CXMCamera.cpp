@@ -189,9 +189,11 @@ bool XMIPCamera::stop()
     return close() && logout();
 }
 
-Mat XMIPCamera::current()
+Mat XMIPCamera::current(int rows, int cols)
 {
-    return cvImg;
+    Mat frame;
+    resize(cvImg, frame, cv::Size(cols, rows));
+    return frame;
 }
 
 ostream &operator<<(ostream &output, XMIPCamera &xmcp)
@@ -211,8 +213,6 @@ int XMIPCamera_stop(XMIPCamera *xmcp) { return xmcp->stop(); }
 void XMIPCamera_frame(XMIPCamera *xmcp, int rows, int cols, unsigned char *frompy)
 {
     // START_TIMER
-    Mat frame;
-    resize(xmcp->current(), frame, cv::Size(cols, rows));
-    memcpy(frompy, frame.data, rows * cols * 3);
+    memcpy(frompy, (xmcp->current(rows, cols)).data, rows * cols * 3);
     // STOP_TIMER("HKIPCamera_frame")
 }

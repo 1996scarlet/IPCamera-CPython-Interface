@@ -46,7 +46,7 @@ class HKIPCamera
 public:
 	bool start();
 	bool stop();
-	cv::Mat current();
+	cv::Mat current(int rows, int cols);
 	HKIPCamera(char *IP, int Port, char *UserName, char *Password);
 	friend std::ostream &operator<<(std::ostream &output, HKIPCamera &hkcp);
 	friend void g_fPlayESCallBack(LONG lPreviewHandle, NET_DVR_PACKET_INFO_EX *pstruPackInfo, void *pUser);

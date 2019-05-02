@@ -21,7 +21,8 @@ int main()
     for (auto i = 0; i < 1000; i++)
     {
         //cv::imwrite("display.jpg", hkcp->current());
-        cv::imshow("display", hkcp->current());
+        // cv::imshow("display", hkcp->current(540, 960));
+        cv::imshow("display", hkcp->current(1080, 1920));
         cv::waitKey(1);
     }
 
