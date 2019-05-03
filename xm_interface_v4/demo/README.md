@@ -11,7 +11,10 @@ xmcp->start();
 sleep(2);
 for (auto i = 0; i < 5; i++)
 {
-    imshow("display", xmcp->current());
+    // #define MAX_FRAME_WIDTH 1920
+    // #define MAX_FRAME_HEIGHT 1080
+    // ROWS和COLS的值不能超过头文件中预设的最大值 默认540*960
+    imshow("display", xmcp->current(ROWS, COLS));
     waitKey(1);
 }
 
@@ -25,10 +28,12 @@ delete (xmcp);
 XMIPCamera *c_xmcp = XMIPCamera_init("10.41.0.208", 34567, "admin", "");
 XMIPCamera_start(c_xmcp);
 
-sleep(2);
 for (auto i = 0; i < 50; i++)
 {
-    imshow("c_display", c_xmcp->current());
+    // #define MAX_FRAME_WIDTH 1920
+    // #define MAX_FRAME_HEIGHT 1080
+    // ROWS和COLS的值不能超过头文件中预设的最大值 默认540*960
+    imshow("c_display", c_xmcp->current(ROWS, COLS));
     waitKey(1);
 }
 

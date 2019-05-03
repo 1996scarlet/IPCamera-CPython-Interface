@@ -10,7 +10,10 @@ hkcp->start();
 sleep(2);
 for (auto i = 0; i < 5; i++)
 {
-    imshow("display", hkcp->current());
+    // #define MAX_FRAME_WIDTH 1920
+    // #define MAX_FRAME_HEIGHT 1080
+    // ROWS和COLS的值不能超过头文件中预设的最大值 默认540*960
+    imshow("display", hkcp->current(ROWS, COLS));
     waitKey(1);
 }
 
@@ -27,7 +30,10 @@ HKIPCamera_start(c_hkcp);
 sleep(2);
 for (auto i = 0; i < 50; i++)
 {
-    imshow("c_display", c_hkcp->current());
+    // #define MAX_FRAME_WIDTH 1920
+    // #define MAX_FRAME_HEIGHT 1080
+    // ROWS和COLS的值不能超过头文件中预设的最大值 默认540*960
+    imshow("c_display", c_hkcp->current(ROWS, COLS));
     waitKey(1);
 }
 

@@ -22,7 +22,8 @@ int main()
     {
         //cv::imwrite("display.jpg", hkcp->current());
         // cv::imshow("display", hkcp->current(540, 960));
-        cv::imshow("display", hkcp->current(1080, 1920));
+        // cv::imshow("display", hkcp->current(1080, 1920));
+        cv::imshow("display", hkcp->current());
         cv::waitKey(1);
     }
 

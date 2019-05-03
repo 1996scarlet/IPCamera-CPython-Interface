@@ -13,8 +13,9 @@ int main(int argc, char **argv)
 
     for (auto i = 0; i < 1500; i++)
     {
-        imshow("display", xmcp->current(540,960));
-        // imshow("display", xmcp->current(1080, 1920));
+        // imshow("display", xmcp->current());
+        // imshow("display", xmcp->current(540,960));
+        imshow("display", xmcp->current(1080, 1920));
         waitKey(1);
     }
 

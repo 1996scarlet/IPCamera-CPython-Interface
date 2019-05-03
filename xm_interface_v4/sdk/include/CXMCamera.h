@@ -46,7 +46,7 @@ class XMIPCamera
 public:
     bool start();
     bool stop();
-    cv::Mat current(int rows, int cols);
+    cv::Mat current(int rows = 540, int cols = 960);
     XMIPCamera(char *IP, int Port, char *UserName, char *Password);
     friend std::ostream &operator<<(std::ostream &output, XMIPCamera &xmcp);
     friend int RealDataCallBack_V2(long lRealHandle, const PACKET_INFO_EX *pFrame, void* dwUser);
