@@ -1,4 +1,4 @@
-#include "../sdk/include/CXMCamera.h"
+#include "CXMCamera.h"
 
 using namespace cv;
 using namespace std;
