@@ -5,14 +5,15 @@
 
 > * 兼容主流海康和雄迈IPC的适用于C、C++和python2/3的帧数据获取接口
 > * 简化海康和雄迈IPC连接、登录、注册回调、解码（FFMPEG）、取帧的步骤
-> * 通过Ctypes支持python2和python3（编译时修改CMAKE的`TARGET_PYTHON_VERSION`）
+> * 通过Ctypes支持python3
 
 ## 近期更新（Recent update）
 
+> * 现已将接口打包为deb安装包 可以实现一键编译安装（测试于Ubuntu 19.04/18.04.2 LTS）
 > * 添加对不同分辨率的摄像头的支持 并且支持在运行过程中动态切换分辨率
 > * 现在可以在客户端取不同分辨率的帧数据
 > * 现在在申请对象时会对buffer初始化 来防止取帧过快导致客户端崩溃
-> * 为进一步优化取帧效率 启用了多线程解码
+> * 为进一步优化取帧效率 启用了多线程解码(ffmpeg4.0及以上版本默认解码线程为1)
 
 ## 性能对比（Performance comparison）
 
@@ -24,42 +25,22 @@
 
 * [数据驱动层IPC取帧接口说明.pptx](数据驱动层IPC取帧接口说明.pptx)
 
+## 安装与测试（Install and testing）
+
+* [使用release文件夹下的文件进行安装](release/Readme.md)
+* 安装完后可以通过demo文件夹下的测试程序进行效果测试
+
 ## 接口调用方式（C/C++/Python）
 
 * [海康IPC调用方式](hk_interface_v4/demo/README.md)
 * [雄迈IPC调用方式](xm_interface_v4/demo/README.md)
 
-## 环境要求（the environment require）
-
-> 尽管本repo提供基于以下环境的预编译so文件
-
-* `Ubuntu 18.04.X LTS`（或其他发行版本 要求Linux内核版本>=4.14）
-* `Python 3`（建议使用3.7版本）
-* `pip 3`（sudo apt install python3-pip）
-* `Opencv 4.0.X`（源码编译 详见注意事项）
-    1. `mkdir build`
-    2. `cd ./build`
-    3. `cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_ENABLE_NONFREE=ON -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules -D PYTHON_EXECUTABLE=/usr/bin/python3 -D BUILD_EXAMPLES=ON ..`
-    4. `sudo make && make install`
-* `FFmpeg 4.1.X`（源码编译 详见注意事项）
-    1. `yasm/cosmic 1.3.0-2build1 amd64` (sudo apt install yasm)
-    2. Type `./configure --enable-gpl --enable-nonfree --enable-pthreads --enable-libx264 --enable-shared` to create the configuration. A list of configure options is printed by running `configure --help`.
-    3. Then type `make` to build FFmpeg. GNU Make 3.81 or later is required.
-    4. Type `sudo make install` to install all binaries and libraries you built.
-    5. Type `ffmpeg` to see configuration.
-
-> 但还是建议额外安装以下依赖环境自行编译(无特殊版本要求)
-
-* `gcc/g++/Cmake...`（sudo apt install build-essential cmake libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libgdbm-dev libdb5.3-dev libbz2-dev libexpat1-dev liblzma-dev tk-dev libffi-dev）
-* `python3-dev/python-dev`（sudo apt-get install python3-dev python-dev）
-* `libx264-dev libvpx-dev`（sudo apt-get install libx264-dev libvpx-dev）
-* [海康SDK-版本号: V5.3.5.2 build20171124](http://www.hikvision.com/cn/download_more_403.html "Title")
-* [雄迈SDK-更新日期: 2018-06-26](https://download.xm030.cn/d/MDAwMDA3MzM "Title")
-
 ## 目录结构说明（Files-Tree）
 
 * hk_interface - 存放海康接口源码、测试demo、SDK
 * xm_interface - 存放雄迈接口源码、测试demo、SDK
+* deb_packager - 用于打包libipc的deb安装包
+* release - 包括ffmpeg、opencv的安装脚本和预编译的libipc安装包
 * 每个关键子目录下都附带README文件
 
 ## 注意事项（Cautious）

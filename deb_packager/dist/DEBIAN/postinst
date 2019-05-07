@@ -1,0 +1,16 @@
+#!/bin/sh
+
+#1: Build and install HKcAMERA interface
+mkdir ./hk_build
+cmake  -S ./HKCWrapper -B ./hk_build
+sudo make -C ./hk_build/
+
+#2: Build and install XMcAMERA interface
+mkdir ./xm_build
+cmake  -S ./XMCWrapper -B ./xm_build
+sudo make -C ./xm_build/
+
+#3: Remove cache
+rm -rf ./*_build/
+
+echo "Camera Interface Installed"

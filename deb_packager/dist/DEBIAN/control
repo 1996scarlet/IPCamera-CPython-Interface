@@ -1,0 +1,9 @@
+Package: libipc
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends:
+Installed-Size: 512
+Maintainer: 1996scarlet@gmail.com
+Description: libipc package for hk and xm webcamera

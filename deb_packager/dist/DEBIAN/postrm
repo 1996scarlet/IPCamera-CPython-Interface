@@ -1,0 +1,1 @@
+sudo rm /usr/lib/libHKCamera_v4.so /usr/lib/libXMCamera_v4.so
