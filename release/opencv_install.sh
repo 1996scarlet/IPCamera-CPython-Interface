@@ -8,13 +8,9 @@ echo $"Opencv $CV_VERSION Building Scripts 2019.05.03 by 1996scarlet@gmail.com"
 sudo apt update
 sudo apt dist-upgrade
 sudo apt install build-essential cmake unzip pkg-config
-sudo apt install libjpeg-dev libpng-dev libtiff-dev
-sudo apt install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
-sudo apt install libxvidcore-dev libx264-dev libx265-dev libvpx-dev
-sudo apt install python3 python3-dev python3-pip
-sudo apt-get install libgtk-3-dev
-sudo apt-get install libatlas-base-dev gfortran
-pip3 install numpy
+sudo apt install libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libx265-dev libvpx-dev
+sudo apt install python3.7 python3.7-dev python3-pip libgtk-3-dev libatlas-base-dev gfortran
+pip3 install numpy --user
 
 #2: Download OpenCV 4
 cd ~

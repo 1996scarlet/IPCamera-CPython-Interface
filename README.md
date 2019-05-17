@@ -40,6 +40,7 @@
 * hk_interface - 存放海康接口源码、测试demo、SDK
 * xm_interface - 存放雄迈接口源码、测试demo、SDK
 * deb_packager - 用于打包libipc的deb安装包
+* py_packager - 用于打包libipc的python wheel安装包
 * release - 包括ffmpeg、opencv的安装脚本和预编译的libipc安装包
 * 每个关键子目录下都附带README文件
 

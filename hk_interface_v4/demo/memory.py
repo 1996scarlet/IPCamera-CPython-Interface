@@ -11,13 +11,13 @@ hkcp.start()
 while True:
     cv2.imshow("display", hkcp.frame(rows=540, cols=960))
     # cv2.imshow("display", hkcp.frame(rows=1080, cols=1920))
-    k = cv2.waitKey(38) & 0xff
+    k = cv2.waitKey(35) & 0xff
     if k == ord('q') or k == 27:
         break
 
 '''
-for i in range(1000):
-    # cv2.imwrite("./ppl/%d.jpg" % i, hkcp.frame())
+for i in range(20):
+    cv2.imwrite("./%d.jpg" % i, hkcp.frame())
     # cv2.imshow("display", hkcp.frame(rows=540, cols=960))
     # cv2.waitKey(40)
     start_time = time.time()
