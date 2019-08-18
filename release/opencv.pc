@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: opencv
+Description: The opencv library
+Version: 4.x.x
+Cflags: -I${includedir}/opencv4 -I${includedir}/opencv4/opencv2
+Libs: -L${libdir} -lopencv_calib3d -lopencv_imgproc -lopencv_core -lopencv_ml -lopencv_features2d -lopencv_objdetect -lopencv_flann -lopencv_video -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs
